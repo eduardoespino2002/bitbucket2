@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.autoSave": "off",
+		"python.autoComplete.extraPaths": [
+			"/opt/ros/foxy/lib/python3.8/site-packages"
+		],
+		"files.associations": {
+			"chrono": "cpp"
+		},
+		"ros.distro": "foxy",
+        "editor.fontSize": 10,
+        "editor.lineHeight": 12,
+        "terminal.integrated.fontSize": 12,
+        "terminal.integrated.lineHeight": 1
+	}
+}
