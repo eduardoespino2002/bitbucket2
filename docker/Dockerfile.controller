@@ -1,0 +1,149 @@
+
+#------------------------------------------------------------------
+# Use the official ros-foxy image to build the package
+
+
+FROM dots/rosdevel:foxy AS appBuilder
+
+USER dots
+WORKDIR /home/dots/dots_system
+ADD src src
+
+RUN bash -c 'source /opt/ros/foxy/setup.bash \
+&&  colcon build --merge-install --packages-ignore \
+gazebo_dev gazebo_msgs gazebo_ros gazebo_plugins \
+bagparse'
+
+
+
+#------------------------------------------------------------------
+# Start from a minimal image and just install what is necessary for
+# ros to run
+FROM ubuntu:20.04
+RUN apt-get update && apt-get -y install \
+    libpython3-dev \
+    libspdlog-dev \
+    libtinyxml-dev \
+    libtinyxml2-dev \
+    python3-lark \
+    python3-yaml \
+    python3-numpy \
+    python3-setuptools \
+    python3-netifaces
+
+# Ros files
+COPY --from=appBuilder /opt/ros/foxy/ /opt/ros/foxy
+# Opencv libraries
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libopencv* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libtbb* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libjpeg* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libwebp* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libpng* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libgdcmMSFF* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libtiff* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libIlmImf* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/libgdal* /usr/lib
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libgdcm* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libopenjp2* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libCharLS* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libjson-c* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libjbig* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libHalf* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libIex* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libIlmThread* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/libarmadillo* /usr/lib
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libpoppler* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libqhull* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libfreexl* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libgeos* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libepsilon* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libodbc* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libkml* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libxerces* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libnetcdf* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libhdf5* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/libmfhdfalt* /usr/lib
+COPY --from=appBuilder /usr/lib/libdfalt* /usr/lib
+COPY --from=appBuilder /usr/lib/libogdi* /usr/lib
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libgif* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libgeotiff* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libcfitsio* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libpq* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libproj* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libdap* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libspatialite* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libcurl* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libfy* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libxml* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libmysql* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libarpack* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libsuper* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libfreetype* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libfontconfig* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/liblcms* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libnss* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libsmime* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libnspr* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libltdl* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libminizip* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/liburiparser* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libicu* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libsz* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libgss* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libldap* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libnghttp* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/librtmp* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libssh* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libpsl* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/liblber* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libbrot* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libpl* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libaec* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libkrb* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libk5crypto* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libsasl* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libkeyutils* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libheim* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libasn* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libhcrypto* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libroken* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libwind* /usr/lib/x86_64-linux-gnu
+COPY --from=appBuilder /usr/lib/x86_64-linux-gnu/libhx* /usr/lib/x86_64-linux-gnu
+
+# Aruco library
+COPY --from=appBuilder /usr/local/lib/libaruco* /usr/local/lib
+
+RUN rm -rf /opt/ros/foxy/include
+RUN rm -rf /usr/include
+
+
+# Clear up
+RUN apt-get -y install strace
+RUN apt-get clean autoclean
+RUN apt-get autoremove --yes
+RUN rm -rf /var/lib/apt/lists/*
+
+# Mount point for storage volume
+RUN mkdir /storage
+
+# Make user
+ARG UID
+ARG GID
+ARG HOSTOSTYPE
+ENV SHELL=/bin/bash
+RUN mkdir /etc/sudoers.d
+RUN bash -c 'if [[ ${HOSTOSTYPE} == Linux ]] ; then addgroup --gid ${GID} user ; fi'
+RUN adduser --gecos '' --disabled-password --uid $UID --gid $GID dots \
+    && adduser dots sudo \
+    && echo "dots ALL=(ALL_ NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd
+
+USER dots
+RUN mkdir /home/dots/dots_system
+WORKDIR /home/dots/dots_system
+ADD docker/scripts/start_controller .
+
+COPY --from=appBuilder  /home/dots/dots_system/install /home/dots/dots_system/install
+RUN chmod +x install/share/dots_sim/launch/rsp_helper.sh
+
+# 
+RUN /bin/bash -c "source ./install/setup.bash"

@@ -1,0 +1,13 @@
+
+echo "Creating virtual display"
+export DISPLAY=:1
+rm -f /tmp/.X1-lock
+Xvfb $DISPLAY -screen 0 1600x900x24 &
+
+# Wait for the display to become available
+while [ ! -e /tmp/.X11-unix/X1 ]; do echo "Wait for X server.."; sleep 0.1; done
+
+
+source install/setup.bash
+ros2 launch dots_sim gazebo.launch.py "$@"
+

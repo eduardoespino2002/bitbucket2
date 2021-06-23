@@ -1,0 +1,3 @@
+
+# Get all processes for this terminal except for the first and kill them
+kill `ps T|tail -n +3|awk "{print \\$1}"`

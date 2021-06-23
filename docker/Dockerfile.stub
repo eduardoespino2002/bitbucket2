@@ -1,0 +1,21 @@
+# Dots development system
+FROM simonj23/dots_rosdevel:foxy
+
+# Late custom changes here
+#--------------------------
+
+# Modified dorowu startup script to take DUID and DGID user and
+# group IDs from the invoking host so we match the ownership of the
+# mounted file system
+COPY docker/scripts/startup.sh /
+RUN chmod +x /startup.sh
+
+# Make sure no root owned files
+RUN chown 1099:1099 -R /home/dots/.gazebo
+
+ENTRYPOINT ["/startup.sh"]
+
+
+
+
+

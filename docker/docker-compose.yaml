@@ -1,0 +1,24 @@
+version: "3.7"
+
+services:
+  dots_rosdevel:
+    image: dots_rosdevel:foxy
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.stub
+    environment:
+      - USER=dots 
+      - DGID=${DGID}
+      - DUID=${DUID}
+    ports:
+      - "8080:8080"
+      - "8081:80"
+      - "8082:5900"
+      - "8085:8085"
+    volumes:
+      - ../:/home/dots/dots_system
+    networks:
+      - dots_network
+
+networks:
+  dots_network:

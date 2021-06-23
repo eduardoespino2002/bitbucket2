@@ -1,0 +1,94 @@
+version: "3.7"
+
+
+services:
+  dots_gazebo_service:
+    container_name: dots_rosdevel
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.rosdevel
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - HOSTOSTYPE=${HOSTOSTYPE}
+    image: dots/rosdevel:foxy
+    ports:
+      - "8080:8080"
+      - "8081:80"
+      - "8082:5900"
+      - "8085:8085"
+    volumes:
+      - ../:/home/dots/dots_system
+    networks:
+      - dots_network
+
+    user: dots
+    entrypoint: /bin/bash -c 'cd dots_system && ../start_simulator use_gzweb:=true'
+
+  dots_controller1_service:
+    container_name: dots_controller1
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.controller
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    image: dots/controller:foxy
+    networks:
+      - dots_network
+    command: /bin/bash start_controller robot_name:=robot_00000001 robot_pose:=0,-0.5,1.3 
+
+  dots_controller2_service:
+    container_name: dots_controller2
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.controller
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    image: dots/controller:foxy
+    networks:
+      - dots_network
+    command: /bin/bash start_controller robot_name:=robot_00000002 robot_pose:=0,0.5,1.3 
+
+  dots_controller3_service:
+    container_name: dots_controller3
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.controller
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    image: dots/controller:foxy
+    networks:
+      - dots_network
+    command: /bin/bash start_controller robot_name:=robot_00000003 robot_pose:=0.5,0,0 
+
+  dots_controller4_service:
+    container_name: dots_controller4
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.controller
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    image: dots/controller:foxy
+    networks:
+      - dots_network
+    command: /bin/bash start_controller robot_name:=robot_00000004 robot_pose:=0.5,0.7,0.2 
+
+  dots_controller5_service:
+    container_name: dots_controller5
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.controller
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    image: dots/controller:foxy
+    networks:
+      - dots_network
+    command: /bin/bash start_controller robot_name:=robot_00000005 robot_pose:=0.5,-0.7,1.0 
+
+networks:
+  dots_network:

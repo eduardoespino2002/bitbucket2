@@ -1,0 +1,4 @@
+
+source install/setup.bash
+ros2 launch dots_example_controller controller.launch.py "$@"
+
