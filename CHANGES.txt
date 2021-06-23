@@ -1,0 +1,14 @@
+27/5/2021
+---------
+Fixed size of carriers to reflect reality
+Made script to regenerate carrier models
+
+
+v0.3 26/5/2021
+--------------
+Refactored dockerfile to not need UID/GID during build.
+No longer download complete Gazebo models.
+Container size reduction.
+Now pulls main image from Docker Hub
+
+
